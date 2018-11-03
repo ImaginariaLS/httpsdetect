@@ -17,7 +17,7 @@
     </requires>
     <description>
         <lang name="default">Correct links for HTTP / HTTPS.</lang>
-        <lang name="russian">Отслеживание HTTP / HTTPS входа на сайт.</lang>
+        <lang name="russian">Коррекция ссылок HTTP/HTTPS .</lang>
     </description>
     <delegate>
         <module></module>

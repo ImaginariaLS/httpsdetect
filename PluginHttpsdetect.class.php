@@ -2,21 +2,22 @@
 /**
  * HTTPS Detect - отслеживание HTTP / HTTPS входа на сайт
  *
- * Версия:	1.0.1
- * Автор:	Александр Вереник
- * Профиль:	http://livestreet.ru/profile/Wasja/
- * GitHub:	https://github.com/wasja1982/livestreet_httpsdetect
+ * Версия:    1.0.1
+ * Автор:    Александр Вереник
+ * Профиль:    http://livestreet.ru/profile/Wasja/
+ * GitHub:    https://github.com/wasja1982/livestreet_httpsdetect
  *
  **/
 
 /**
  * Запрещаем напрямую через браузер обращение к этому файлу.
  */
-if (! class_exists ( 'Plugin' )) {
-    die ( 'Hacking attemp!' );
+if (!class_exists('Plugin')) {
+    die ('Hacking attemp!');
 }
 
-class PluginHttpsdetect extends Plugin {
+class PluginHttpsdetect extends Plugin
+{
 
     protected $aInherits = array(
         'action' => array('ActionAjax'),
@@ -33,29 +34,8 @@ class PluginHttpsdetect extends Plugin {
         'module' => array('ModuleViewer')
     );
 
-    /**
-     * Активация плагина
-     */
-    public function Activate() {
-        return true;
-    }
-
-    /**
-     * Инициализация плагина
-     */
-    public function Init() {
-        $bStaticDomain = false;
-        if (class_exists('PluginStaticdomain')) {
-            $plugins = $this->Plugin_GetActivePlugins();
-            if (in_array('staticdomain', $plugins)) {
-                $bStaticDomain = true;
-            }
-        }
-        Config::Set('plugin.httpsdetect.staticdomain', $bStaticDomain);
-        return true;
-    }
-
-    static public function CorrectUrl($sUrl, $bBidirect = true) {
+    static public function CorrectUrl($sUrl, $bBidirect = true)
+    {
         $bHttps = Config::Get('plugin.httpsdetect.https');
         if ($bHttps) {
             $sUrl = str_replace('http://', 'https://', $sUrl);
@@ -65,14 +45,15 @@ class PluginHttpsdetect extends Plugin {
         return $sUrl;
     }
 
-    static public function CorrectImages($sText, $bBidirect = true) {
+    static public function CorrectImages($sText, $bBidirect = true)
+    {
         $bHttps = Config::Get('plugin.httpsdetect.https');
         if (Config::Get('plugin.httpsdetect.correct_img_src')) {
             $aServers = array(parse_url(Config::Get('path.root.web'), PHP_URL_HOST));
             if (Config::Get('plugin.httpsdetect.staticdomain')) {
                 $aServers[] = parse_url(Config::Get('plugin.staticdomain.static_web'), PHP_URL_HOST);
             }
-            $sServers = count($aServers)>1 ? ('[' . implode('|', $aServers) . ']') : $aServers[0];
+            $sServers = count($aServers) > 1 ? ('[' . implode('|', $aServers) . ']') : $aServers[0];
             if ($bHttps) {
                 $sText = preg_replace('~(src\s*=\s*["|\'])http:\/\/(' . $sServers . ')~musi', '$1https://$2', $sText);
             } elseif ($bBidirect) {
@@ -86,5 +67,29 @@ class PluginHttpsdetect extends Plugin {
             $sText = str_replace('http://video.yandex.ru/users/', 'https://video.yandex.ru/users/', $sText);
         }
         return $sText;
+    }
+
+    /**
+     * Активация плагина
+     */
+    public function Activate()
+    {
+        return true;
+    }
+
+    /**
+     * Инициализация плагина
+     */
+    public function Init()
+    {
+        $bStaticDomain = false;
+        if (class_exists('PluginStaticdomain')) {
+            $plugins = $this->Plugin_GetActivePlugins();
+            if (in_array('staticdomain', $plugins)) {
+                $bStaticDomain = true;
+            }
+        }
+        Config::Set('plugin.httpsdetect.staticdomain', $bStaticDomain);
+        return true;
     }
 }
