@@ -11,9 +11,22 @@
 
 class PluginHttpsdetect_HookHttpsdetect extends Hook
 {
+    const ConfigKey = 'httosdetect';
+    const HooksArray = [
+        'module_Viewer_init_after'  =>  'viewer_init_after',
+    ];
+
     public function RegisterHook()
     {
-        $this->AddHook('module_Viewer_init_after', 'viewer_init_after');
+        $plugin_config_key = $this::ConfigKey;
+        foreach ($this::HooksArray as $hook => $callback) {
+            $this->AddHook(
+                $hook,
+                $callback,
+                __CLASS__,
+                Config::Get("plugin.{$plugin_config_key}.hook_priority.{$hook}") ?? 1
+            );
+        }
     }
 
     public function viewer_init_after($arg)
